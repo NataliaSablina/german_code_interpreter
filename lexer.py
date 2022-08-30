@@ -108,4 +108,4 @@ class Lexer:
                 return self._id()
 
             self.error()
-            return Token(EOF, None, self.line, self.column)
+        return Token(EOF, None, self.line, self.column)
