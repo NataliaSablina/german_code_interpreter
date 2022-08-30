@@ -1,5 +1,5 @@
 from errors import *
-from token import *
+from tokens import *
 
 
 class Lexer:
@@ -8,7 +8,7 @@ class Lexer:
         self.pos = 0
         self.current_char = self.text[self.pos]
         self.line = 1
-        self.column = 1
+        self.column = 0
 
     def error(self):
         s = "Lexer error on '{lexeme}' line: {line} column: {column}".format(
@@ -24,7 +24,7 @@ class Lexer:
             self.column = 0
 
         self.pos += 1
-        if self.pos > len(self.text) + 1:
+        if self.pos > len(self.text) - 1:
             self.current_char = None
         else:
             self.current_char = self.text[self.pos]
@@ -36,19 +36,19 @@ class Lexer:
 
     def number(self):
         result = ''
-        while self.current_char.isdigit():
+        while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
             self.advance()
 
         if self.current_char == '.':
             result += self.current_char
             self.advance()
-            while self.current_char.isdigit():
+            while self.current_char is not None and self.current_char.isdigit():
                 result += self.current_char
                 self.advance()
-            return Token(FLOAT, float(result))
+            return Token(FLOAT, float(result), self.line, self.column)
         else:
-            return Token(INTEGER, int(result))
+            return Token(INTEGER, int(result), self.line, self.column)
 
     def _id(self):
         result = ''
@@ -56,7 +56,7 @@ class Lexer:
             result += self.current_char
             self.advance()
 
-        token = RESERVED_KEYWORDS.get(result, Token(ID, result))
+        token = RESERVED_KEYWORDS.get(result.upper(), Token(ID, result, self.line, self.column))
         return token
 
     def get_next_token(self):
@@ -67,39 +67,39 @@ class Lexer:
 
             if self.current_char == '+':
                 self.advance()
-                return Token(PLUS, '+')
+                return Token(PLUS, '+', self.line, self.column)
 
             if self.current_char == '-':
                 self.advance()
-                return Token(MINUS, '-')
+                return Token(MINUS, '-', self.line, self.column)
 
             if self.current_char == '*':
                 self.advance()
-                return Token(MUL, '*')
+                return Token(MUL, '*', self.line, self.column)
 
             if self.current_char == '/':
                 self.advance()
-                return Token(FLOAT_DIV, '/')
+                return Token(FLOAT_DIV, '/', self.line, self.column)
 
             if self.current_char == '.':
                 self.advance()
-                return Token(DOT, '+')
+                return Token(DOT, '.', self.line, self.column)
 
             if self.current_char == '{':
                 self.advance()
-                return Token(LBRAKET, '{')
+                return Token(LBRAKET, '{', self.line, self.column)
 
             if self.current_char == '}':
                 self.advance()
-                return Token(RBRAKET, '}')
+                return Token(RBRAKET, '}', self.line, self.column)
 
             if self.current_char == '=':
                 self.advance()
-                return Token(ASSIGN, '=')
+                return Token(ASSIGN, '=', self.line, self.column)
 
             if self.current_char == ';':
                 self.advance()
-                return Token(SEMI, ';')
+                return Token(SEMI, ';', self.line, self.column)
 
             if self.current_char.isdigit():
                 return self.number()
@@ -108,4 +108,4 @@ class Lexer:
                 return self._id()
 
             self.error()
-            return Token(EOF, None)
+            return Token(EOF, None, self.line, self.column)

@@ -12,6 +12,8 @@ RBRAKET = 'RBRAKET'
 SEMI = 'SEMI'
 MAIN = 'MAIN'
 ID = 'ID'
+INTEGER_TYPE = 'INTEGER_TYPE'
+FLOAT_TYPE = 'FLOAT_TYPE'
 
 
 class Token:
@@ -28,5 +30,7 @@ class Token:
 
 
 RESERVED_KEYWORDS = {
-    'AUSÜBUNG': Token(MAIN, 'MAIN'),
+    'AUSFUHRUNG': Token(MAIN, 'MAIN'),
+    'INT': Token(INTEGER_TYPE, 'INTEGER_TYPE'),
+    'FLOAT': Token(FLOAT_TYPE, 'FLOAT_TYPE'),
 }
