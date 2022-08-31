@@ -152,6 +152,11 @@ class Parser:
         elif token.token_type == PLUS:
             self.check_token(PLUS)
             return UnaryOp(token, self.factor())
+        elif token.token_type == LPAREN:
+            self.check_token(LPAREN)
+            node = self.expr()
+            self.check_token(RPAREN)
+            return node
         else:
             node = self.variable()
             return node

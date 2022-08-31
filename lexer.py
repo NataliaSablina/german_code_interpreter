@@ -92,6 +92,13 @@ class Lexer:
             if self.current_char == '}':
                 self.advance()
                 return Token(RBRAKET, '}', self.line, self.column)
+            if self.current_char == '(':
+                self.advance()
+                return Token(LPAREN, '(', self.line, self.column)
+
+            if self.current_char == ')':
+                self.advance()
+                return Token(RPAREN, ')', self.line, self.column)
 
             if self.current_char == '=':
                 self.advance()
