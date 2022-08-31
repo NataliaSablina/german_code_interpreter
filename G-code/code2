@@ -1,10 +1,10 @@
 int g, t=3;
 ausfuhrung {
-    float a, b, c=6, g=7;
+    float a, b, c=6;
     a = 3 + 4*7;
     float r;
     r = 1.2 + 6;
     int h;
     h = 1 + (2*7-3) + (9-((((8)))));
-    d = c+g;;
+    a = c+1;
 }.

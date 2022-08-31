@@ -175,3 +175,16 @@ class SemanticAnalyzer(NodeVisitor):
         print('visit_Num')
         pass
 
+    def visit_VarAssignDecl(self, node):
+        print('visit_VarAssignDecl')
+        print(node.type_name)
+        type_name = node.type_name.value
+        print(type_name)
+        type_symbol = self.current_scope.lookup(type_name)
+        var_name = node.var_name
+        var_symbol = VarSymbol(var_name, type_symbol)
+
+        if self.current_scope.lookup(var_name, only_current_scope=True):
+            raise Exception("Error: Duplicate identifier '%s' found" % var_name)
+
+        self.current_scope.insert(var_symbol)

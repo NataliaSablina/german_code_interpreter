@@ -70,7 +70,7 @@ class Parser:
         print(self.current_token)
         self.check_token(ID)
         self.check_token(ASSIGN)
-        var_assign_decl = VarAssignDecl(type_current_id, token.value, self.current_token.value)
+        var_assign_decl = VarAssignDecl(token.value, type_current_id, self.current_token.value)
         var_declarations.append(var_assign_decl)
         if self.current_token.token_type == INTEGER:
             self.check_token(INTEGER)

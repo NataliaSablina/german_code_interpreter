@@ -45,7 +45,7 @@ class Interpreter(NodeVisitor):
 
     def visit_VarAssignDecl(self, node):
         print('visit_VarAssignDecl')
-        self.MEMORY[node.type_name] = node.value
+        self.MEMORY[node.var_name] = node.value
         return node.value
 
     def visit_Assign(self, node):
