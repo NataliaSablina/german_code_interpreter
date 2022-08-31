@@ -1,4 +1,4 @@
-int g, t=3;
+int g=23, t=3;
 ausfuhrung {
     float a, b, c=6;
     a = 3 + 4*7;
@@ -6,5 +6,5 @@ ausfuhrung {
     r = 1.2 + 6;
     int h;
     h = 1 + (2*7-3) + (9-((((8)))));
-    a = c+1;
+    a = c+g;
 }.

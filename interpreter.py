@@ -8,6 +8,8 @@ class Interpreter(NodeVisitor):
 
     def visit_Program(self, node):
         print('visit_Program')
+        for declaration in node.declarations:
+            self.visit(declaration)
         self.visit(node.compound_statement)
 
     def visit_Compound(self, node):
