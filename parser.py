@@ -70,7 +70,12 @@ class Parser:
         print(self.current_token)
         self.check_token(ID)
         self.check_token(ASSIGN)
-        var_assign_decl = VarAssignDecl(token.value, type_current_id, self.current_token.value)
+        if self.current_token.token_type == MINUS:
+            self.check_token(MINUS)
+            value = - self.current_token.value
+            var_assign_decl = VarAssignDecl(token.value, type_current_id, value)
+        else:
+            var_assign_decl = VarAssignDecl(token.value, type_current_id, self.current_token.value)
         var_declarations.append(var_assign_decl)
         if self.current_token.token_type == INTEGER:
             self.check_token(INTEGER)
@@ -82,11 +87,7 @@ class Parser:
         print('variable')
         token = self.current_token
         print('==========================', token)
-        # if self.current_token.token_type == self.assignment():
-        #     node = self.assignment()
-        #     return node
         self.check_token(ID)
-
         node = Var(token)
         return node
 
@@ -168,6 +169,9 @@ class Parser:
             return Num(token)
         elif token.token_type == PLUS:
             self.check_token(PLUS)
+            return UnaryOp(token, self.factor())
+        elif token.token_type == MINUS:
+            self.check_token(MINUS)
             return UnaryOp(token, self.factor())
         elif token.token_type == LPAREN:
             self.check_token(LPAREN)

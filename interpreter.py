@@ -25,7 +25,6 @@ class Interpreter(NodeVisitor):
     def visit_BinOp(self, node):
         print('visit_BinOp')
         if node.op.token_type == PLUS:
-            # print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', node.left.value)
             return self.visit(node.left) + self.visit(node.right)
         if node.op.token_type == MINUS:
             return self.visit(node.left) - self.visit(node.right)
@@ -34,7 +33,7 @@ class Interpreter(NodeVisitor):
         if node.op.token_type == FLOAT_DIV:
             return float(self.visit(node.left)) / float(self.visit(node.right))
 
-    def UnaryOp(self, node):
+    def visit_UnaryOp(self, node):
         print('UnaryOp')
         if node.op.token_type == MINUS:
             return -self.visit(node.expr)
