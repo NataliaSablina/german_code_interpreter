@@ -1,9 +1,10 @@
-int g;
+int g, t=3;
 ausfuhrung {
-    INT a, b, c;
+    float a, b, c=6, g=7;
     a = 3 + 4*7;
     float r;
     r = 1.2 + 6;
     int h;
-    h = 1 + (2*7-3) + (9-((((8)))))
+    h = 1 + (2*7-3) + (9-((((8)))));
+    c = g;
 }.

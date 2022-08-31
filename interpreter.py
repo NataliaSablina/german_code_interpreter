@@ -23,6 +23,7 @@ class Interpreter(NodeVisitor):
     def visit_BinOp(self, node):
         print('visit_BinOp')
         if node.op.token_type == PLUS:
+            # print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', node.left.value)
             return self.visit(node.left) + self.visit(node.right)
         if node.op.token_type == MINUS:
             return self.visit(node.left) - self.visit(node.right)
@@ -45,14 +46,18 @@ class Interpreter(NodeVisitor):
     def visit_Assign(self, node):
         print('visit_Assign')
         var_name = node.left.value
+        print(var_name)
         var_value = self.visit(node.right)
+        print(var_value)
         self.MEMORY[var_name] = var_value
         print(self.MEMORY)
 
     def visit_Var(self, node):
         print('visit_Var')
         var_name = node.value
+        print(var_name)
         var_value = self.MEMORY.get(var_name)
+        print(var_value)
         return var_value
 
     def visit_VarDecl(self, node):

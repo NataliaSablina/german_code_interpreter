@@ -60,3 +60,9 @@ class Type(AST):
         self.token = token
         self.value = token.value
 
+
+class VarAssignDecl(VarDecl):
+    def __init__(self, var_name, type_name, right_var):
+        super().__init__(var_name, type_name)
+        self.value = right_var
+

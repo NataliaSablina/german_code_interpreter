@@ -44,22 +44,89 @@ class Parser:
         print('variable_declarations')
         type_current_id = self.type_id()
         print(self.current_token)
-        var_nodes = [self.variable()]
-        print(self.current_token)
-
-        while self.current_token.token_type == COMMA:
-            self.check_token(COMMA)
-            var_decl = self.variable()
-            var_nodes.append(var_decl)
+        print(self.lexer.current_char)
+        if self.current_token.token_type == ID and self.lexer.current_char == '=':
+            token = self.current_token
+            print(token)
+            self.check_token(ID)
+            self.check_token(ASSIGN)
             print(self.current_token)
+            print('********************************')
+            var_assign_decl = VarAssignDecl(type_current_id, token.value, self.current_token.value)
+            var_declarations = [var_assign_decl]
+            if self.current_token.token_type == INTEGER:
+                self.check_token(INTEGER)
+            elif self.current_token.token_type == FLOAT:
+                self.check_token(FLOAT)
+            while self.current_token.token_type == COMMA:
+                self.check_token(COMMA)
+                token = self.current_token
+                self.check_token(ID)
+                self.check_token(ASSIGN)
+                print('*************************')
+                var_assign_decl = VarAssignDecl(type_current_id, token.value, self.current_token.value)
+                var_declarations.append(var_assign_decl)
+                if self.current_token.token_type == INTEGER:
+                    self.check_token(INTEGER)
+                elif self.current_token.token_type == FLOAT:
+                    self.check_token(FLOAT)
+
+            print('PPPPPPPPPPPP', self.current_token)
+            print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        else:
+            var_declarations = [VarDecl(self.variable(), type_current_id)]
+            print(self.current_token)
+            while self.current_token.token_type == COMMA:
+                print('444444444444444444444444444444')
+                self.check_token(COMMA)
+                if self.current_token.token_type == ID and self.lexer.current_char == '=':
+                    print('777777777777777')
+                    token = self.current_token
+                    print(self.current_token)
+                    self.check_token(ID)
+                    self.check_token(ASSIGN)
+                    print('********************************')
+                    print(self.current_token)
+                    var_assign_decl = VarAssignDecl(type_current_id, token.value, self.current_token.value)
+                    var_declarations = [var_assign_decl]
+                    if self.current_token.token_type == INTEGER:
+                        self.check_token(INTEGER)
+                    elif self.current_token.token_type == FLOAT:
+                        self.check_token(FLOAT)
+                    while self.current_token.token_type == COMMA:
+                        self.check_token(COMMA)
+                        print(self.current_token)
+                        token = self.current_token
+                        self.check_token(ID)
+                        self.check_token(ASSIGN)
+                        print('*************************')
+                        var_assign_decl = VarAssignDecl(type_current_id, token.value, self.current_token.value)
+                        var_declarations.append(var_assign_decl)
+                        if self.current_token.token_type == INTEGER:
+                            self.check_token(INTEGER)
+                        elif self.current_token.token_type == FLOAT:
+                            self.check_token(FLOAT)
+                    print('11111111111111', self.current_token)
+                else:
+                    print('555555555555555555555555555555555555555')
+                    print(self.current_token)
+                    var_decl = VarDecl(self.variable(), type_current_id)
+                    var_declarations.append(var_decl)
+                    print(self.current_token)
+
+            print('PPPPPPPPPPPP', self.current_token)
+            print('PPPPPPPPPPPP', self.current_token)
+            print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
             # self.check_token(SEMI)
         # else:
         #     var_nodes.append(self.variable())
         #     # self.check_token(SEMI)
 
-        var_declarations = [VarDecl(var_node, type_current_id) for var_node in var_nodes]
-        print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        # var_declarations = [VarDecl(var_node, type_current_id) for var_node in var_nodes]
         return var_declarations
+
+    def var_assignment(self):
+        pass
 
     def variable(self):
         print('variable')

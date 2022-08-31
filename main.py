@@ -13,10 +13,10 @@ if __name__ == '__main__':
     lexer = Lexer(code)
     parser = Parser(lexer)
     tree = parser.parse()
-    # interpreter = Interpreter(tree)
-    semantic_analyzer = SemanticAnalyzer()
-    semantic_analyzer.visit(tree)
-    # interpreter.interpret()
-    # print(interpreter.MEMORY)
+    interpreter = Interpreter(tree)
+    # semantic_analyzer = SemanticAnalyzer()
+    # semantic_analyzer.visit(tree)
+    interpreter.interpret()
+    print(interpreter.MEMORY)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
