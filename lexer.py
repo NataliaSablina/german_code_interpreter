@@ -107,5 +107,9 @@ class Lexer:
             if self.current_char.isalpha():
                 return self._id()
 
+            if self.current_char == ',':
+                self.advance()
+                return Token(COMMA, ',', self.line, self.column)
+
             self.error()
         return Token(EOF, None, self.line, self.column)

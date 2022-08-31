@@ -15,6 +15,7 @@ class Parser:
         if self.current_token.token_type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
+            print(self.current_token)
             self.error(ErrorCode.UNEXPECTED_TOKEN, self.current_token, message='Incorrect token')
 
     def program(self):
@@ -38,18 +39,19 @@ class Parser:
     def variable_declaration(self):
         print('variable_declarations')
         type_current_id = self.type_id()
+        print(self.current_token)
+        var_nodes = [self.variable()]
+        print(self.current_token)
 
-        var_nodes = []
-        if self.current_token.token_type == COMMA:
-            while self.current_token.token_type != COMMA:
-                self.check_token(COMMA)
-                var_decl = self.variable()
-                var_nodes.append(var_decl)
+        while self.current_token.token_type == COMMA:
+            self.check_token(COMMA)
+            var_decl = self.variable()
+            var_nodes.append(var_decl)
             print(self.current_token)
             # self.check_token(SEMI)
-        else:
-            var_nodes.append(self.variable())
-            # self.check_token(SEMI)
+        # else:
+        #     var_nodes.append(self.variable())
+        #     # self.check_token(SEMI)
 
         var_declarations = [VarDecl(var_node, type_current_id) for var_node in var_nodes]
         print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
@@ -58,7 +60,7 @@ class Parser:
     def variable(self):
         print('variable')
         token = self.current_token
-        print(token)
+        print('==========================', token)
         # if self.current_token.token_type == self.assignment():
         #     node = self.assignment()
         #     return node
@@ -84,7 +86,7 @@ class Parser:
         if token.token_type == INTEGER_TYPE:
             self.check_token(INTEGER_TYPE)
         if token.token_type == FLOAT_TYPE:
-            self.check_token(INTEGER_TYPE)
+            self.check_token(FLOAT_TYPE)
         return token
 
     def empty(self):
@@ -104,7 +106,6 @@ class Parser:
         print(self.current_token)
         self.check_token(RBRAKET)
         print(self.current_token)
-        self.check_token(DOT)
         return root
 
     def statement_list(self):
@@ -184,4 +185,5 @@ class Parser:
         tree = self.program()
         if self.current_token.token_type != EOF:
             self.error(ErrorCode.UNEXPECTED_TOKEN, self.current_token, message='Program must end by EOF')
+        print(tree)
         return tree
