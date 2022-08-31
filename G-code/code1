@@ -1,4 +1,7 @@
 Ausfuhrung {
-    int a;
-    a = 3 + 4;
+    int a, b, c;
+    a = 3 + 4*7;
+    float r;
+    r = 1.2 + 6;
+    int h;
 }.

@@ -2,6 +2,8 @@ from lexer import *
 from ast_nodes import *
 
 
+# l1 = Lexer('Ausfuhrung { \n int a, b, c; \n a = 3 + 4*7; float r; r = 1.2+6; \n int h; \n}.')
+
 class Parser:
     def __init__(self, lexer):
         self.lexer = lexer
