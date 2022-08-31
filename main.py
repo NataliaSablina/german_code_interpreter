@@ -12,7 +12,10 @@ if __name__ == '__main__':
     code = open('G-code/code1', 'r+').read()
     lexer = Lexer(code)
     parser = Parser(lexer)
-    interpreter = Interpreter(parser)
+    tree = parser.parse()
+    interpreter = Interpreter(tree)
+    # semantic_analyzer = SemanticAnalyzer()
+    # semantic_analyzer.visit(tree)
     interpreter.interpret()
     print(interpreter.MEMORY)
 

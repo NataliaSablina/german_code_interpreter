@@ -1,19 +1,9 @@
-from parser import *
-
-
-class NodeVisitor:
-    def visit(self, node):
-        method_name = 'visit_' + type(node).__name__
-        visitor = getattr(self, method_name, self.error_visit)
-        return visitor(node)
-
-    def error_visit(self, node):
-        raise Exception('No visit_{} method'.format(type(node).__name__))
+from semantic_analyzer import *
 
 
 class Interpreter(NodeVisitor):
-    def __init__(self, parser):
-        self.parser = parser
+    def __init__(self, tree):
+        self.tree = tree
         self.MEMORY = {}
 
     def visit_Program(self, node):
@@ -75,7 +65,7 @@ class Interpreter(NodeVisitor):
         print('visit_NoOp')
 
     def interpret(self):
-        tree = self.parser.parse()
+        tree = self.tree
         if tree is None:
             return ''
         return self.visit(tree)

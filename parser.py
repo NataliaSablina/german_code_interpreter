@@ -23,6 +23,8 @@ class Parser:
     def program(self):
         print('program')
         declarations = self.declarations()
+        if declarations:
+            self.check_token(SEMI)
         compound_statement = self.compound_statement()
         prog_node = Program(declarations, compound_statement)
         self.check_token(DOT)
@@ -73,7 +75,7 @@ class Parser:
 
     def assignment(self):
         print('assignment')
-        left = self.current_token
+        left = Var(self.current_token)
         self.check_token(ID)
         op = self.current_token
         self.check_token(ASSIGN)
