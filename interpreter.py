@@ -59,11 +59,7 @@ class Interpreter(NodeVisitor):
     def visit_Var(self, node):
         print('visit_Var')
         var_name = node.value
-        print(var_name)
         var_value = self.MEMORY.get(var_name)
-        print('99999999999999999999')
-        print(var_value)
-        print('uuuuuuuuuuu')
         return var_value
 
     def visit_VarDecl(self, node):

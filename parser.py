@@ -14,19 +14,15 @@ class Parser:
         raise ParserError(s)
 
     def check_token(self, token_type):
-        print(token_type)
         if self.current_token.token_type == token_type:
             self.current_token = self.lexer.get_next_token()
         else:
             print('check_token', self.current_token)
-            # print(self.lexer.get_next_token())
             self.error(ErrorCode.UNEXPECTED_TOKEN, self.current_token, message='Incorrect token')
 
     def program(self):
         print('program')
         declarations = self.declarations()
-        # if declarations:
-        #     self.check_token(SEMI)
         compound_statement = self.compound_statement()
         prog_node = Program(declarations, compound_statement)
         self.check_token(DOT)
@@ -36,21 +32,28 @@ class Parser:
         print('declarations')
         declarations = []
         while True:
-            while self.current_token.token_type in (INTEGER_TYPE, FLOAT_TYPE):
-                if self.current_token.token_type == INTEGER_TYPE:
-                    node = self.variable_declaration()
-                    declarations.extend(node)
-                    print('declarations', declarations)
-                elif self.current_token.token_type == FLOAT_TYPE:
-                    node = self.variable_declaration()
-                    declarations.extend(node)
-                    print('FLOAT_TYPE, declarations')
-                else:
-                # node = self.empty()
-                # print()
-                    break
-                self.check_token(SEMI)
-            break
+            if self.current_token.token_type in (INTEGER_TYPE, FLOAT_TYPE):
+                while self.current_token.token_type in (INTEGER_TYPE, FLOAT_TYPE):
+                    if self.current_token.token_type == INTEGER_TYPE:
+                        node = self.variable_declaration()
+                        declarations.extend(node)
+                        print('declarations', declarations)
+                    elif self.current_token.token_type == FLOAT_TYPE:
+                        node = self.variable_declaration()
+                        declarations.extend(node)
+                        print('FLOAT_TYPE, declarations')
+                    else:
+                        # node = self.empty()
+                        # print()
+                        break
+                    self.check_token(SEMI)
+            elif self.current_token.token_type == ID:
+                while self.current_token.token_type == ID:
+                    node = self.statement()
+                    self.check_token(SEMI)
+                    declarations.append(node)
+            else:
+                break
         return declarations
 
     def variable_declaration(self):
@@ -62,53 +65,36 @@ class Parser:
             while self.current_token.token_type == COMMA:
                 self.check_token(COMMA)
                 var_declarations.extend(self.variable_assignment_declaration(type_current_id))
-            print('tttttttttttttttttttt')
-            # self.check_token(SEMI)
             return var_declarations
         else:
             var_declarations = [VarDecl(self.variable(), type_current_id)]
-            print('hhhhhhhhhhhhhhhhhhhhhh')
             while self.current_token.token_type == COMMA:
                 self.check_token(COMMA)
-                print('lllllllllllllllllllll')
                 if self.current_token.token_type == ID and self.lexer.current_char == '=':
-                    print('yyyyyyyyyyyyyyyyyyyyyyyy')
                     var_declarations.extend(self.variable_assignment_declaration(type_current_id))
                     while self.current_token.token_type == COMMA:
-                        print('ooooooooooooooooooooooooooooooo')
                         self.check_token(COMMA)
                         var_declarations.extend(self.variable_assignment_declaration(type_current_id))
-                        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-                    print('pppppppppppppppppp')
-                    # self.check_token(SEMI)
-                    print('*********', self.current_token)
-                    print('kkkkkk', var_declarations)
                     return var_declarations
                 else:
                     print(self.current_token)
                     var_decl = VarDecl(self.variable(), type_current_id)
-                    print('sssssssssssssssssss')
                     var_declarations.append(var_decl)
-            print('jjjjjjjjjjjjjjjjjjjjj')
-            # self.check_token(SEMI)
             return var_declarations
 
     def variable_assignment_declaration(self, type_current_id):
         print('variable_assignment_declaration')
         var_declarations = []
         token = self.current_token
-        print('((((((((((((', self.current_token)
         self.check_token(ID)
         self.check_token(ASSIGN)
         var_assign_decl = VarAssignDecl(token.value, type_current_id, self.expr())
         var_declarations.append(var_assign_decl)
-        print('variable_assignment_declaration', self.current_token)
         return var_declarations
 
     def variable(self):
         print('variable')
         token = self.current_token
-        print('==========================', token)
         self.check_token(ID)
         node = Var(token)
         return node
@@ -124,7 +110,6 @@ class Parser:
         return node
 
     def type_id(self):
-        print(self.current_token)
         print('type_id')
         token = self.current_token
         if token.token_type == INTEGER_TYPE:
@@ -138,7 +123,6 @@ class Parser:
         return NoOp()
 
     def compound_statement(self):
-        print('++++++++++++', self.current_token)
         print('compound_statement')
         self.check_token(MAIN)
         self.check_token(LBRAKET)
@@ -146,43 +130,28 @@ class Parser:
         root = Compound()
         for node in nodes:
             root.children.append(node)
-        print(root.children)
-        print('ppppppp', self.current_token)
         self.check_token(RBRAKET)
-        print(self.current_token)
         return root
 
     def statement_list(self):
         print('statement_list')
         node = self.statement()
-        # self.check_token(SEMI)
         results = [node]
-        print('pppppppp')
-        print('_______________', self.current_token)
         while self.current_token.token_type == SEMI or self.current_token.token_type == ID:
-            print('iiiiiiiiiiiiiiii')
             self.check_token(SEMI)
             results.append(self.statement())
-            print('statement_list', self.current_token)
         return results
 
     def statement(self):
         print('statement')
-        print('+++++++++++++', self.current_token)
-
         if self.current_token.token_type == ID:
-            print('statement', self.current_token)
             node = self.assignment()
         elif self.current_token.token_type == INTEGER_TYPE:
             node = self.variable_declaration()
         elif self.current_token.token_type == FLOAT_TYPE:
-            print('statement', self.current_token)
             node = self.variable_declaration()
-            print('RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR')
-            print(node)
         else:
             node = self.empty()
-        print(self.current_token)
         return node
 
     def factor(self):
@@ -242,5 +211,4 @@ class Parser:
         tree = self.program()
         if self.current_token.token_type != EOF:
             self.error(ErrorCode.UNEXPECTED_TOKEN, self.current_token, message='Program must end by EOF')
-        print(tree)
         return tree

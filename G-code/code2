@@ -1,12 +1,16 @@
-int g=23, t=3+1;
+int g=23, t=3+g;
+int s=23, l=3+g;
+t = 2+9;
+g = 2+9;
 int k=8;
 float p;
+p = 1 + 2;
 
 ausführung {
     float a, b=(4+9)*7, c=-6;
     int n, m, v;
     a = 3 + 4*7;
-    a = 3 + 4*7;
+    a = 3 + 4*7+p;
     float r;
     r = 1.2 + 6;
     int y;
