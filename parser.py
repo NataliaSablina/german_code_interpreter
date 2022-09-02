@@ -70,17 +70,8 @@ class Parser:
         print(self.current_token)
         self.check_token(ID)
         self.check_token(ASSIGN)
-        if self.current_token.token_type == MINUS:
-            self.check_token(MINUS)
-            value = - self.current_token.value
-            var_assign_decl = VarAssignDecl(token.value, type_current_id, value)
-        else:
-            var_assign_decl = VarAssignDecl(token.value, type_current_id, self.current_token.value)
+        var_assign_decl = VarAssignDecl(token.value, type_current_id, self.expr())
         var_declarations.append(var_assign_decl)
-        if self.current_token.token_type == INTEGER:
-            self.check_token(INTEGER)
-        elif self.current_token.token_type == FLOAT:
-            self.check_token(FLOAT)
         return var_declarations
 
     def variable(self):

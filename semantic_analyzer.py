@@ -188,3 +188,7 @@ class SemanticAnalyzer(NodeVisitor):
             raise Exception("Error: Duplicate identifier '%s' found" % var_name)
 
         self.current_scope.insert(var_symbol)
+
+    def visit_UnaryOp(self, node):
+        self.visit(node.expr)
+
