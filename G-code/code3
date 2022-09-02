@@ -1,15 +1,14 @@
 int g=23, t=3+1;
-int k=8;
-float p;
+
+funktion beispiel(){
+    rückkehr 2;
+};
 
 ausführung {
     float a, b=(4+9)*7, c=-6;
-    int n, m, v;
-    a = 3 + 4*7;
     a = 3 + 4*7;
     float r;
     r = 1.2 + 6;
-    int y;
     int h=1 + (2*7-3) + (9-((((8)))));
     a = -c;
 }.

@@ -117,9 +117,9 @@ class SemanticAnalyzer(NodeVisitor):
 
     def visit_Compound(self, node):
         print('visit_Compound')
-        print('Enter scope: Ausfuhrung')
+        print('Enter scope: Ausführung')
         main_scope = ScopedSymbolTable(
-            scope_name='Ausfuhrung',
+            scope_name='Ausführung',
             scope_level=2,
             enclosing_scope=self.current_scope
         )
@@ -133,7 +133,7 @@ class SemanticAnalyzer(NodeVisitor):
                 self.visit(child)
         print(main_scope)
         self.current_scope = self.current_scope.enclosing_scope
-        print('Leave Ausfuhrung scope')
+        print('Leave Ausführung scope')
 
     def visit_VarDecl(self, node):
         print('visit_VarDecl')

@@ -66,3 +66,9 @@ class VarAssignDecl(VarDecl):
         super().__init__(var_name, type_name)
         self.value = right_var
 
+
+class ProcDecl(AST):
+    def __init__(self, proc_name, params, block):
+        self.proc_name = proc_name
+        self.params = params
+        self.block = block
