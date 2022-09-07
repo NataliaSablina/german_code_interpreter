@@ -3,7 +3,8 @@ class AST:
 
 
 class Program(AST):
-    def __init__(self, declarations, compound_statement):
+    def __init__(self, name, declarations, compound_statement):
+        self.name = name
         self.declarations = declarations
         self.compound_statement = compound_statement
 

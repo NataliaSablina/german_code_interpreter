@@ -1,16 +1,29 @@
 from semantic_analyzer import *
+from call_stack import *
 
 
 class Interpreter(NodeVisitor):
     def __init__(self, tree):
         self.tree = tree
-        self.MEMORY = {}
+        self.call_stack = CallStack()
 
     def visit_Program(self, node):
         print("visit_Program")
+        prog_name = node.name
+        ar = ActivationRecord(
+            name=prog_name,
+            type=ARType.PROGRAM,
+            nesting_level=1
+        )
+        self.call_stack.push(ar)
+        print(str(self.call_stack))
         for declaration in node.declarations:
             self.visit(declaration)
         self.visit(node.compound_statement)
+        print(f'LEAVE: PROGRAM {prog_name}')
+        print(str(self.call_stack))
+        self.call_stack.pop()
+
 
     def visit_Compound(self, node):
         print("visit_Compound")
@@ -47,19 +60,23 @@ class Interpreter(NodeVisitor):
     def visit_VarAssignDecl(self, node):
         print("visit_VarAssignDecl")
         value = self.visit(node.value)
-        self.MEMORY[node.var_name] = value
+        ar = self.call_stack.peek()
+        ar[node.var_name] = value
         return value
 
     def visit_Assign(self, node):
         print("visit_Assign")
         var_name = node.left.value
         var_value = self.visit(node.right)
-        self.MEMORY[var_name] = var_value
+        ar = self.call_stack.peek()
+        ar[var_name] = var_value
+
 
     def visit_Var(self, node):
         print("visit_Var")
         var_name = node.value
-        var_value = self.MEMORY.get(var_name)
+        ar = self.call_stack.peek()
+        var_value = ar.get(var_name)
         return var_value
 
     def visit_VarDecl(self, node):

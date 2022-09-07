@@ -28,9 +28,10 @@ class Parser:
     def program(self):
         print("program")
         declarations = self.declarations()
+        name = self.current_token.value
         self.check_token(MAIN)
         compound_statement = self.compound_statement()
-        prog_node = Program(declarations, compound_statement)
+        prog_node = Program(name, declarations, compound_statement)
         self.check_token(DOT)
         return prog_node
 

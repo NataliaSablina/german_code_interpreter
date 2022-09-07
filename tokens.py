@@ -36,7 +36,7 @@ class Token:
 
 
 RESERVED_KEYWORDS = {
-    "AUSFÜHRUNG": Token(MAIN, "MAIN"),
+    "AUSFÜHRUNG": Token(MAIN, "ausführung"),
     "INT": Token(INTEGER_TYPE, "INTEGER_TYPE"),
     "FLOAT": Token(FLOAT_TYPE, "FLOAT_TYPE"),
     "RÜCKKEHR": Token(RETURN, "RETURN"),
