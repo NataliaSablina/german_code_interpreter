@@ -57,21 +57,25 @@ class Parser:
                 declarations.append(node)
             elif self.current_token.token_type == PROCEDURE:
                 print("Check procedure")
-                self.check_token(PROCEDURE)
-                proc_name = self.current_token.value
-                self.check_token(ID)
-                self.check_token(LPAREN)
-                params = self.formal_parameters_list()
-                self.check_token(RPAREN)
-                self.check_token(LBRAKET)
-                block = self.statement_list()
-                self.check_token(RBRAKET)
-                node = ProcDecl(proc_name, params, block)
+                node = self.procedure_declaration()
                 self.check_token(SEMI)
                 declarations.append(node)
             else:
                 break
         return declarations
+
+    def procedure_declaration(self):
+        self.check_token(PROCEDURE)
+        proc_name = self.current_token.value
+        self.check_token(ID)
+        self.check_token(LPAREN)
+        params = self.formal_parameters_list()
+        self.check_token(RPAREN)
+        self.check_token(LBRAKET)
+        block = self.statement_list()
+        self.check_token(RBRAKET)
+        node = ProcDecl(proc_name, params, block)
+        return node
 
     def formal_parameters_list(self):
         if self.current_token.token_type not in (INTEGER_TYPE, FLOAT_TYPE):
@@ -79,6 +83,8 @@ class Parser:
         param_nodes = self.formal_parameters()
         while self.current_token.token_type == SEMI:
             self.check_token(SEMI)
+            if self.current_token.token_type == RPAREN:
+                break
             param_nodes.extend(self.formal_parameters())
         return param_nodes
 
@@ -133,6 +139,29 @@ class Parser:
         var_assign_decl = VarAssignDecl(token.value, type_current_id, self.expr())
         var_declarations.append(var_assign_decl)
         return var_declarations
+
+    def proccall_statement(self):
+        token = self.current_token
+        proc_name = self.current_token.value
+        self.check_token(ID)
+        self.check_token(LPAREN)
+        actual_params = []
+        if self.current_token.token_type != RPAREN:
+            node = self.expr()
+            actual_params.append(node)
+
+        while self.current_token.token_type == COMMA:
+            self.check_token(COMMA)
+            node = self.expr()
+            actual_params.append(node)
+        self.check_token(RPAREN)
+
+        node = ProcedureCall(
+            proc_name=proc_name,
+            actual_params=actual_params,
+            token=token,
+        )
+        return node
 
     def variable(self):
         print("variable")
@@ -190,7 +219,9 @@ class Parser:
         print("statement")
         print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
         print(self.current_token.token_type)
-        if self.current_token.token_type == ID:
+        if self.current_token.token_type == ID and self.lexer.current_char == '(':
+            node = self.proccall_statement()
+        elif self.current_token.token_type == ID:
             node = self.assignment()
         elif self.current_token.token_type == INTEGER_TYPE:
             node = self.variable_declaration()

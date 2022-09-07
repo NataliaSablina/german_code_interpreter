@@ -77,6 +77,10 @@ class Interpreter(NodeVisitor):
         #     value = self.visit(param.value)
         #     self.MEMORY[param.var_name] = value
 
+    def visit_ProcedureCall(self, node):
+        print("visit_ProcedureCall")
+        pass
+
     def interpret(self):
         tree = self.tree
         if tree is None:

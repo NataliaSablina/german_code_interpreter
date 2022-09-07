@@ -1,8 +1,8 @@
 int g=23, t=3+1;
 
-prozedure beispiel(int x){
+prozedure beispiel(int s, b; float d;){
     int z=1+2;
-    z = x + 6;
+    z =  6;
     prozedure f(float g){
         float q;
         q=t;
@@ -16,4 +16,5 @@ ausführung {
     r = 1.2 + 6;
     int h=1 + (2*7-3) + (9-((((8)))));
     a = -c;
+    beispiel(r, 67832, 6.7);
 }.

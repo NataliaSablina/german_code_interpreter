@@ -230,5 +230,9 @@ class SemanticAnalyzer(NodeVisitor):
 
         self.current_scope.insert(var_symbol)
 
+    def visit_ProcedureCall(self, node):
+        for param_node in node.actual_params:
+            self.visit(param_node)
+
     def visit_UnaryOp(self, node):
         self.visit(node.expr)

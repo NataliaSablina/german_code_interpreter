@@ -72,3 +72,10 @@ class ProcDecl(AST):
         self.proc_name = proc_name
         self.params = params
         self.block = block
+
+
+class ProcedureCall(AST):
+    def __init__(self, proc_name, actual_params, token):
+        self.proc_name = proc_name
+        self.actual_params = actual_params
+        self.token = token
