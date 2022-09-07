@@ -4,7 +4,7 @@ t = 2+9;
 g = 2+9;
 int k=8;
 float p;
-p = 1 + 2;
+p = 1 + g;
 
 ausführung {
     float a, b=(4+9)*7, c=-6;
