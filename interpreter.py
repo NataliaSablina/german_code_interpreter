@@ -15,6 +15,7 @@ class Interpreter(NodeVisitor):
             type=ARType.PROGRAM,
             nesting_level=1
         )
+        print(f'ENTER: PROGRAM {prog_name}')
         self.call_stack.push(ar)
         print(str(self.call_stack))
         for declaration in node.declarations:
@@ -71,7 +72,6 @@ class Interpreter(NodeVisitor):
         ar = self.call_stack.peek()
         ar[var_name] = var_value
 
-
     def visit_Var(self, node):
         print("visit_Var")
         var_name = node.value
@@ -96,7 +96,32 @@ class Interpreter(NodeVisitor):
 
     def visit_ProcedureCall(self, node):
         print("visit_ProcedureCall")
-        pass
+        proc_name = node.proc_name
+        proc_symbol = node.proc_symbol
+        ar = ActivationRecord(
+            name=proc_name,
+            nesting_level=proc_symbol.scope_level + 1,
+            type=ARType.PROCEDURE
+        )
+        proc_symbol = node.proc_symbol
+        formal_params = proc_symbol.params
+        actual_params = node.actual_params
+        for formal_param, param_arg in zip(formal_params, actual_params):
+            ar[formal_param.name] = self.visit(param_arg)
+        self.call_stack.push(ar)
+        print(f'ENTER: PROCEDURE {proc_name}')
+        print(str(self.call_stack))
+        for el in proc_symbol.block_ast:
+            if isinstance(el, list):
+                for block in el:
+                    self.visit(block)
+            else:
+                self.visit(el)
+        print(f'LEAVE: PROCEDURE {proc_name}')
+        print(str(self.call_stack))
+
+        self.call_stack.pop()
+
 
     def interpret(self):
         tree = self.tree

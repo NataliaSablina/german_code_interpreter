@@ -7,6 +7,7 @@ prozedure beispiel(int s, b; float d;){
         float q;
         q=t;
     };
+    f(3.7);
 };
 
 ausführung {

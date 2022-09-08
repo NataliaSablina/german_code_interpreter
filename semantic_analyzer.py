@@ -5,6 +5,7 @@ class Symbol:
     def __init__(self, name, type=None):
         self.name = name
         self.type = type
+        self.scope_level = 0
 
 
 class VarSymbol(Symbol):
@@ -40,6 +41,7 @@ class ProcedureSymbol(Symbol):
         super().__init__(name)
         # a list of formal parameters
         self.params = params if params is not None else []
+        self.block_ast = None
 
     def __str__(self):
         return "<{class_name}(name={name}, parameters={params})>".format(
@@ -85,6 +87,7 @@ class ScopedSymbolTable:
 
     def insert(self, symbol):
         print(f"Insert symbol {symbol.name}")
+        symbol.scope_level = self.scope_level
         self._symbols[symbol.name] = symbol
 
     def lookup(self, name, only_current_scope=False):
@@ -159,6 +162,7 @@ class SemanticAnalyzer(NodeVisitor):
 
         self.current_scope = self.current_scope.enclosing_scope
         print("LEAVE scope: %s" % proc_name)
+        proc_symbol.block_ast = node.block
 
     def visit_Compound(self, node):
         print("visit_Compound")
@@ -233,6 +237,9 @@ class SemanticAnalyzer(NodeVisitor):
     def visit_ProcedureCall(self, node):
         for param_node in node.actual_params:
             self.visit(param_node)
+
+        proc_symbol = self.current_scope.lookup(node.proc_name)
+        node.proc_symbol = proc_symbol
 
     def visit_UnaryOp(self, node):
         self.visit(node.expr)
