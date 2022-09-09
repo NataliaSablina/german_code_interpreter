@@ -10,21 +10,16 @@ class Interpreter(NodeVisitor):
     def visit_Program(self, node):
         print("visit_Program")
         prog_name = node.name
-        ar = ActivationRecord(
-            name=prog_name,
-            type=ARType.PROGRAM,
-            nesting_level=1
-        )
-        print(f'ENTER: PROGRAM {prog_name}')
+        ar = ActivationRecord(name=prog_name, type=ARType.PROGRAM, nesting_level=1)
+        print(f"ENTER: PROGRAM {prog_name}")
         self.call_stack.push(ar)
         print(str(self.call_stack))
         for declaration in node.declarations:
             self.visit(declaration)
         self.visit(node.compound_statement)
-        print(f'LEAVE: PROGRAM {prog_name}')
+        print(f"LEAVE: PROGRAM {prog_name}")
         print(str(self.call_stack))
         self.call_stack.pop()
-
 
     def visit_Compound(self, node):
         print("visit_Compound")
@@ -101,7 +96,7 @@ class Interpreter(NodeVisitor):
         ar = ActivationRecord(
             name=proc_name,
             nesting_level=proc_symbol.scope_level + 1,
-            type=ARType.PROCEDURE
+            type=ARType.PROCEDURE,
         )
         proc_symbol = node.proc_symbol
         formal_params = proc_symbol.params
@@ -109,7 +104,7 @@ class Interpreter(NodeVisitor):
         for formal_param, param_arg in zip(formal_params, actual_params):
             ar[formal_param.name] = self.visit(param_arg)
         self.call_stack.push(ar)
-        print(f'ENTER: PROCEDURE {proc_name}')
+        print(f"ENTER: PROCEDURE {proc_name}")
         print(str(self.call_stack))
         for el in proc_symbol.block_ast:
             if isinstance(el, list):
@@ -117,11 +112,13 @@ class Interpreter(NodeVisitor):
                     self.visit(block)
             else:
                 self.visit(el)
-        print(f'LEAVE: PROCEDURE {proc_name}')
+        print(f"LEAVE: PROCEDURE {proc_name}")
         print(str(self.call_stack))
 
         self.call_stack.pop()
 
+    # def visit_FunctionDecl(self, node):
+    #     pass
 
     def interpret(self):
         tree = self.tree

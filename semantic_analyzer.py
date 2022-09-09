@@ -243,3 +243,6 @@ class SemanticAnalyzer(NodeVisitor):
 
     def visit_UnaryOp(self, node):
         self.visit(node.expr)
+
+    # def visit_FunctionDecl(self, node):
+    #     pass

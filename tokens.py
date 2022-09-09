@@ -34,6 +34,24 @@ class Token:
 
     __repr__ = __str__
 
+    def __eq__(self, other):
+        if not isinstance(other, Token):
+            raise TypeError("Instance must be instance of class Token")
+        if (
+            self.token_type == other.token_type
+            and self.value == other.value
+            and self.line == other.line
+            and self.column == other.column
+        ):
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        if not isinstance(other, Token):
+            raise TypeError("Instance must be instance of class Token")
+        return not self.__eq__(other)
+
 
 RESERVED_KEYWORDS = {
     "AUSFÜHRUNG": Token(MAIN, "ausführung"),

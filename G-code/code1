@@ -1,5 +1,5 @@
 int g;
-ausfuhrung {
+ ausführung {
     INT a, b, c;
     a = 3 + 4*7;
     float r;

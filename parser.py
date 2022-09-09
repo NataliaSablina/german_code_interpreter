@@ -61,6 +61,11 @@ class Parser:
                 node = self.procedure_declaration()
                 self.check_token(SEMI)
                 declarations.append(node)
+            # elif self.current_token.token_type == FUNCTION:
+            #     print("Check function")
+            #     node = self.function_declaration()
+            #     self.check_token(SEMI)
+            #     declarations.append(node)
             else:
                 break
         return declarations
@@ -77,6 +82,20 @@ class Parser:
         self.check_token(RBRAKET)
         node = ProcDecl(proc_name, params, block)
         return node
+
+    # def function_declaration(self):
+    #     self.check_token(FUNCTION)
+    #     func_name = self.current_token.value
+    #     self.check_token(ID)
+    #     self.check_token(LPAREN)
+    #     params = self.formal_parameters_list()
+    #     self.check_token(RPAREN)
+    #     self.check_token(LBRAKET)
+    #     block = self.statement_list()
+    #     self.check_token(RBRAKET)
+    #     node = FunctionDecl(func_name, params, block)
+    #     node.return_node = block[-1]
+    #     return node
 
     def formal_parameters_list(self):
         if self.current_token.token_type not in (INTEGER_TYPE, FLOAT_TYPE):
@@ -220,7 +239,7 @@ class Parser:
         print("statement")
         print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
         print(self.current_token.token_type)
-        if self.current_token.token_type == ID and self.lexer.current_char == '(':
+        if self.current_token.token_type == ID and self.lexer.current_char == "(":
             node = self.proccall_statement()
         elif self.current_token.token_type == ID:
             node = self.assignment()
@@ -245,6 +264,11 @@ class Parser:
                 "___________________________________________________________________________________________________",
                 node,
             )
+        # elif self.current_token.token_type == RETURN:
+        #     print('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
+        #     self.check_token(RETURN)
+        #     node = self.expr()
+        #     return node
         else:
             node = self.empty()
         return node

@@ -81,3 +81,10 @@ class ProcedureCall(AST):
         self.actual_params = actual_params
         self.token = token
         self.proc_symbol = None
+
+
+# class FunctionDecl(AST):
+#     def __init__(self, func_name, params, block):
+#         self.func_name = func_name
+#         self.params = params
+#         self.block = block

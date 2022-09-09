@@ -1,0 +1,9 @@
+funktion f(int d){
+    float u=1.2;
+    rückkehr d+u;
+};
+
+ausführung {
+    int a;
+
+}.
