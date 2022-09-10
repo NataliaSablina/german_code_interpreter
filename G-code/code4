@@ -1,9 +1,21 @@
 funktion f(int d){
     float u=1.2;
-    rückkehr d+u;
+    rückkehr d+1;
+};
+
+prozedure beispiel(int s, b; float d;){
+    int r, z=1+2;
+    z =  6;
+    prozedure f(float g){
+        float q;
+        q=g;
+    };
+    r = f(3.7);
 };
 
 ausführung {
-    int a;
+    int a, p;
+    p = f(9);
+    a = beispiel(1, 2, 3.2);
 
 }.

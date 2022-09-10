@@ -56,9 +56,9 @@ class Parser:
                 node = self.statement()
                 self.check_token(SEMI)
                 declarations.append(node)
-            elif self.current_token.token_type == PROCEDURE:
-                print("Check procedure")
-                node = self.procedure_declaration()
+            elif self.current_token.token_type == CALLABLE:
+                print("Check callable")
+                node = self.callable_declaration()
                 self.check_token(SEMI)
                 declarations.append(node)
             # elif self.current_token.token_type == FUNCTION:
@@ -70,9 +70,9 @@ class Parser:
                 break
         return declarations
 
-    def procedure_declaration(self):
-        self.check_token(PROCEDURE)
-        proc_name = self.current_token.value
+    def callable_declaration(self):
+        self.check_token(CALLABLE)
+        call_name = self.current_token.value
         self.check_token(ID)
         self.check_token(LPAREN)
         params = self.formal_parameters_list()
@@ -80,7 +80,7 @@ class Parser:
         self.check_token(LBRAKET)
         block = self.statement_list()
         self.check_token(RBRAKET)
-        node = ProcDecl(proc_name, params, block)
+        node = CallableDecl(call_name, params, block)
         return node
 
     # def function_declaration(self):
@@ -160,9 +160,9 @@ class Parser:
         var_declarations.append(var_assign_decl)
         return var_declarations
 
-    def proccall_statement(self):
+    def call_statement(self):
         token = self.current_token
-        proc_name = self.current_token.value
+        call_name = self.current_token.value
         self.check_token(ID)
         self.check_token(LPAREN)
         actual_params = []
@@ -176,8 +176,8 @@ class Parser:
             actual_params.append(node)
         self.check_token(RPAREN)
 
-        node = ProcedureCall(
-            proc_name=proc_name,
+        node = CallableCall(
+            call_name=call_name,
             actual_params=actual_params,
             token=token,
         )
@@ -196,7 +196,11 @@ class Parser:
         self.check_token(ID)
         op = self.current_token
         self.check_token(ASSIGN)
-        right = self.expr()
+        print(self.lexer.current_char)
+        if self.current_token.token_type == ID and self.lexer.current_char == "(":
+            right = self.call_statement()
+        else:
+            right = self.expr()
         node = Assign(left=left, op=op, right=right)
         return node
 
@@ -240,18 +244,18 @@ class Parser:
         print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
         print(self.current_token.token_type)
         if self.current_token.token_type == ID and self.lexer.current_char == "(":
-            node = self.proccall_statement()
+            node = self.call_statement()
         elif self.current_token.token_type == ID:
             node = self.assignment()
         elif self.current_token.token_type == INTEGER_TYPE:
             node = self.variable_declaration()
         elif self.current_token.token_type == FLOAT_TYPE:
             node = self.variable_declaration()
-        elif self.current_token.token_type == PROCEDURE:
+        elif self.current_token.token_type == CALLABLE:
             print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-            self.check_token(PROCEDURE)
+            self.check_token(CALLABLE)
             print(self.current_token)
-            proc_name = self.current_token.value
+            call_name = self.current_token.value
             self.check_token(ID)
             self.check_token(LPAREN)
             params = self.formal_parameters_list()
@@ -259,7 +263,7 @@ class Parser:
             self.check_token(LBRAKET)
             block = self.statement_list()
             self.check_token(RBRAKET)
-            node = ProcDecl(proc_name, params, block)
+            node = CallableDecl(call_name, params, block)
             print(
                 "___________________________________________________________________________________________________",
                 node,
@@ -269,6 +273,14 @@ class Parser:
         #     self.check_token(RETURN)
         #     node = self.expr()
         #     return node
+        elif self.current_token.token_type == RETURN:
+            token = self.current_token
+            print(token)
+            self.check_token(RETURN)
+            expr = self.expr()
+            print(self.current_token)
+            self.check_token(SEMI)
+            node = Return(token, expr)
         else:
             node = self.empty()
         return node

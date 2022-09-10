@@ -33,6 +33,7 @@ class Interpreter(NodeVisitor):
 
     def visit_BinOp(self, node):
         print("visit_BinOp")
+        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         if node.op.token_type == PLUS:
             return self.visit(node.left) + self.visit(node.right)
         if node.op.token_type == MINUS:
@@ -51,6 +52,7 @@ class Interpreter(NodeVisitor):
 
     def visit_Num(self, node):
         print("visit_Num")
+        print(node.value)
         return node.value
 
     def visit_VarAssignDecl(self, node):
@@ -70,7 +72,9 @@ class Interpreter(NodeVisitor):
     def visit_Var(self, node):
         print("visit_Var")
         var_name = node.value
+        print(var_name)
         ar = self.call_stack.peek()
+        print(ar)
         var_value = ar.get(var_name)
         return var_value
 
@@ -89,36 +93,47 @@ class Interpreter(NodeVisitor):
         #     value = self.visit(param.value)
         #     self.MEMORY[param.var_name] = value
 
-    def visit_ProcedureCall(self, node):
-        print("visit_ProcedureCall")
-        proc_name = node.proc_name
-        proc_symbol = node.proc_symbol
+    def visit_CallableCall(self, node):
+        print("visit_CallableCall")
+        call_name = node.call_name
+        call_symbol = node.call_symbol
         ar = ActivationRecord(
-            name=proc_name,
-            nesting_level=proc_symbol.scope_level + 1,
+            name=call_name,
+            nesting_level=call_symbol.scope_level + 1,
             type=ARType.PROCEDURE,
         )
-        proc_symbol = node.proc_symbol
-        formal_params = proc_symbol.params
+        call_symbol = node.call_symbol
+        formal_params = call_symbol.params
         actual_params = node.actual_params
         for formal_param, param_arg in zip(formal_params, actual_params):
             ar[formal_param.name] = self.visit(param_arg)
         self.call_stack.push(ar)
-        print(f"ENTER: PROCEDURE {proc_name}")
+        print(f"ENTER: PROCEDURE {call_name}")
         print(str(self.call_stack))
-        for el in proc_symbol.block_ast:
+        for el in call_symbol.block_ast:
             if isinstance(el, list):
                 for block in el:
                     self.visit(block)
             else:
                 self.visit(el)
-        print(f"LEAVE: PROCEDURE {proc_name}")
+        print(f"LEAVE: PROCEDURE {call_name}")
         print(str(self.call_stack))
+        result = self.visit(node.call_symbol.return_node)
 
         self.call_stack.pop()
+        return result
+
+    def visit_Return(self, node):
+        print(node.expr)
+        print(node.expr.left.value)
+        print(node.expr.right.value)
+        result = self.visit(node.expr)
+        return result
 
     # def visit_FunctionDecl(self, node):
     #     pass
+    def visit_CallableDecl(self, node):
+        pass
 
     def interpret(self):
         tree = self.tree

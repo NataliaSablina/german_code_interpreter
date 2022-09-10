@@ -15,8 +15,8 @@ class CallStack:
         return self._records[-1]
 
     def __str__(self):
-        s = '\n'.join(repr(ar) for ar in reversed(self._records))
-        s = f'CALL STACK\n{s}\n'
+        s = "\n".join(repr(ar) for ar in reversed(self._records))
+        s = f"CALL STACK\n{s}\n"
         return s
 
     def __repr__(self):
@@ -24,8 +24,8 @@ class CallStack:
 
 
 class ARType(Enum):
-    PROGRAM = 'PROGRAM'
-    PROCEDURE = 'PROCEDURE'
+    PROGRAM = "PROGRAM"
+    PROCEDURE = "PROCEDURE"
 
 
 class ActivationRecord:
@@ -46,16 +46,16 @@ class ActivationRecord:
 
     def __str__(self):
         lines = [
-            '{level}: {type} {name}'.format(
+            "{level}: {type} {name}".format(
                 level=self.nesting_level,
                 type=self.type.value,
                 name=self.name,
             )
         ]
         for name, val in self.members.items():
-            lines.append(f'   {name:<20}: {val}')
+            lines.append(f"   {name:<20}: {val}")
 
-        s = '\n'.join(lines)
+        s = "\n".join(lines)
         return s
 
     def __repr__(self):

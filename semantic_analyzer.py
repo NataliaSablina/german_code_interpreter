@@ -36,12 +36,13 @@ class BuiltInSymbol(Symbol):
         )
 
 
-class ProcedureSymbol(Symbol):
+class CallableSymbol(Symbol):
     def __init__(self, name, params=None):
         super().__init__(name)
         # a list of formal parameters
         self.params = params if params is not None else []
         self.block_ast = None
+        self.return_node = Num(Token(INTEGER, 0))
 
     def __str__(self):
         return "<{class_name}(name={name}, parameters={params})>".format(
@@ -132,14 +133,14 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope = global_scope.enclosing_scope
         print("Leave scope: global")
 
-    def visit_ProcDecl(self, node):
-        proc_name = node.proc_name
-        proc_symbol = ProcedureSymbol(proc_name)
-        self.current_scope.insert(proc_symbol)
+    def visit_CallableDecl(self, node):
+        call_name = node.call_name
+        call_symbol = CallableSymbol(call_name)
+        self.current_scope.insert(call_symbol)
 
-        print("ENTER scope: ", proc_name)
+        print("ENTER scope: ", call_name)
         procedure_scope = ScopedSymbolTable(
-            scope_name=proc_name,
+            scope_name=call_name,
             scope_level=self.current_scope.scope_level + 1,
             enclosing_scope=self.current_scope,
         )
@@ -150,19 +151,32 @@ class SemanticAnalyzer(NodeVisitor):
             param_name = param.var_name.value
             var_symbol = VarSymbol(param_name, param_type)
             self.current_scope.insert(var_symbol)
-            proc_symbol.params.append(var_symbol)
+            call_symbol.params.append(var_symbol)
 
         for block in node.block:
             if isinstance(block, list):
                 for i in block:
+                    if isinstance(i, Return):
+                        call_symbol.return_node = i
+                        block.remove(i)
+                        continue
                     self.visit(i)
             else:
+                if isinstance(block, Return):
+                    call_symbol.return_node = block
+                    node.block.remove(block)
+                    continue
                 self.visit(block)
         print(procedure_scope)
 
         self.current_scope = self.current_scope.enclosing_scope
-        print("LEAVE scope: %s" % proc_name)
-        proc_symbol.block_ast = node.block
+        print("LEAVE scope: %s" % call_name)
+        call_symbol.block_ast = node.block
+        # if not hasattr(call_symbol, 'return_node'):
+        #     call_symbol.return_node.expr = Num(Token(INTEGER, 0))
+
+    def visit_Return(self, node):
+        pass
 
     def visit_Compound(self, node):
         print("visit_Compound")
@@ -234,12 +248,12 @@ class SemanticAnalyzer(NodeVisitor):
 
         self.current_scope.insert(var_symbol)
 
-    def visit_ProcedureCall(self, node):
+    def visit_CallableCall(self, node):
         for param_node in node.actual_params:
             self.visit(param_node)
 
-        proc_symbol = self.current_scope.lookup(node.proc_name)
-        node.proc_symbol = proc_symbol
+        call_symbol = self.current_scope.lookup(node.call_name)
+        node.call_symbol = call_symbol
 
     def visit_UnaryOp(self, node):
         self.visit(node.expr)

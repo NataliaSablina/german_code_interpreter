@@ -68,19 +68,32 @@ class VarAssignDecl(VarDecl):
         self.value = right_var
 
 
-class ProcDecl(AST):
-    def __init__(self, proc_name, params, block):
-        self.proc_name = proc_name
+# class ProcDecl(AST):
+#     def __init__(self, proc_name, params, block):
+#         self.proc_name = proc_name
+#         self.params = params
+#         self.block = block
+
+
+class CallableDecl(AST):
+    def __init__(self, call_name, params, block):
+        self.call_name = call_name
         self.params = params
         self.block = block
 
 
-class ProcedureCall(AST):
-    def __init__(self, proc_name, actual_params, token):
-        self.proc_name = proc_name
+class Return(AST):
+    def __init__(self, token, expr):
+        self.token = token
+        self.expr = expr
+
+
+class CallableCall(AST):
+    def __init__(self, call_name, actual_params, token):
+        self.call_name = call_name
         self.actual_params = actual_params
         self.token = token
-        self.proc_symbol = None
+        self.call_symbol = None
 
 
 # class FunctionDecl(AST):
