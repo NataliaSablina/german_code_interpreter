@@ -24,7 +24,6 @@ class Interpreter(NodeVisitor):
     def visit_Compound(self, node):
         print("visit_Compound")
         for child in node.children:
-            print(child)
             if isinstance(child, list):
                 for decl in child:
                     self.visit(decl)
@@ -33,7 +32,6 @@ class Interpreter(NodeVisitor):
 
     def visit_BinOp(self, node):
         print("visit_BinOp")
-        print("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO")
         if node.op.token_type == PLUS:
             return self.visit(node.left) + self.visit(node.right)
         if node.op.token_type == MINUS:
@@ -44,11 +42,11 @@ class Interpreter(NodeVisitor):
             return float(self.visit(node.left)) / float(self.visit(node.right))
 
     def visit_UnaryOp(self, node):
-        print("UnaryOp")
+        print("visit_UnaryOp")
         if node.op.token_type == MINUS:
-            return -self.visit(node.expr)
+            return -self.visit(node.value)
         if node.op.token_type == PLUS:
-            return self.visit(node.expr)
+            return self.visit(node.value)
 
     def visit_Num(self, node):
         print("visit_Num")
@@ -72,9 +70,7 @@ class Interpreter(NodeVisitor):
     def visit_Var(self, node):
         print("visit_Var")
         var_name = node.value
-        print(var_name)
         ar = self.call_stack.peek()
-        print(ar)
         var_value = ar.get(var_name)
         return var_value
 
@@ -87,11 +83,8 @@ class Interpreter(NodeVisitor):
     def visit_NoOp(self, node):
         print("visit_NoOp")
 
-    def visit_ProcDecl(self, node):
+    def visit_CallableDecl(self, node):
         print("visit_ProcDecl")
-        # for param in node.params:
-        #     value = self.visit(param.value)
-        #     self.MEMORY[param.var_name] = value
 
     def visit_CallableCall(self, node):
         print("visit_CallableCall")
@@ -106,7 +99,22 @@ class Interpreter(NodeVisitor):
         formal_params = call_symbol.params
         actual_params = node.actual_params
         for formal_param, param_arg in zip(formal_params, actual_params):
-            ar[formal_param.name] = self.visit(param_arg)
+            result = self.visit(param_arg)
+            ar[formal_param.name] = result
+            if formal_param.type != param_arg.token.token_type:
+                if str(formal_param.type) == "FLOAT_TYPE" and isinstance(result, float):
+                    continue
+                elif str(formal_param.type) == "INTEGER_TYPE" and isinstance(
+                    result, int
+                ):
+                    continue
+                else:
+                    raise ValueError(
+                        "formal param type and actual param type must be the same"
+                    )
+            else:
+                continue
+
         self.call_stack.push(ar)
         print(f"ENTER: PROCEDURE {call_name}")
         print(str(self.call_stack))
@@ -124,18 +132,12 @@ class Interpreter(NodeVisitor):
         return result
 
     def visit_Return(self, node):
-        print(node.expr)
-        print(node.expr.left.value)
-        print(node.expr.right.value)
+        print("visit_Return")
         result = self.visit(node.expr)
         return result
 
-    # def visit_FunctionDecl(self, node):
-    #     pass
-    def visit_CallableDecl(self, node):
-        pass
-
     def interpret(self):
+        print("visit_interpret")
         tree = self.tree
         if tree is None:
             return ""

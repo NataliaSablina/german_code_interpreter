@@ -2,9 +2,6 @@ from lexer import *
 from ast_nodes import *
 
 
-# l1 = Lexer('Ausfuhrung { \n int a, b, c; \n a = 3 + 4*7; float r; r = 1.2+6; \n int h; \n}.')
-
-
 class Parser:
     def __init__(self, lexer):
         self.lexer = lexer
@@ -43,14 +40,11 @@ class Parser:
                 if self.current_token.token_type == INTEGER_TYPE:
                     node = self.variable_declaration()
                     declarations.extend(node)
-                    print("declarations", declarations)
                 elif self.current_token.token_type == FLOAT_TYPE:
                     node = self.variable_declaration()
                     declarations.extend(node)
-                    print("FLOAT_TYPE, declarations")
 
                 self.check_token(SEMI)
-                print(self.current_token)
             elif self.current_token.token_type == ID:
                 print("check Id")
                 node = self.statement()
@@ -61,16 +55,12 @@ class Parser:
                 node = self.callable_declaration()
                 self.check_token(SEMI)
                 declarations.append(node)
-            # elif self.current_token.token_type == FUNCTION:
-            #     print("Check function")
-            #     node = self.function_declaration()
-            #     self.check_token(SEMI)
-            #     declarations.append(node)
             else:
                 break
         return declarations
 
     def callable_declaration(self):
+        print("callable_declaration")
         self.check_token(CALLABLE)
         call_name = self.current_token.value
         self.check_token(ID)
@@ -82,20 +72,6 @@ class Parser:
         self.check_token(RBRAKET)
         node = CallableDecl(call_name, params, block)
         return node
-
-    # def function_declaration(self):
-    #     self.check_token(FUNCTION)
-    #     func_name = self.current_token.value
-    #     self.check_token(ID)
-    #     self.check_token(LPAREN)
-    #     params = self.formal_parameters_list()
-    #     self.check_token(RPAREN)
-    #     self.check_token(LBRAKET)
-    #     block = self.statement_list()
-    #     self.check_token(RBRAKET)
-    #     node = FunctionDecl(func_name, params, block)
-    #     node.return_node = block[-1]
-    #     return node
 
     def formal_parameters_list(self):
         if self.current_token.token_type not in (INTEGER_TYPE, FLOAT_TYPE):
@@ -109,7 +85,6 @@ class Parser:
         return param_nodes
 
     def formal_parameters(self):
-        param_nodes = []
         result = self.variable_declaration()
         return result
 
@@ -145,7 +120,6 @@ class Parser:
                         )
                     return var_declarations
                 else:
-                    print(self.current_token)
                     var_decl = VarDecl(self.variable(), type_current_id)
                     var_declarations.append(var_decl)
             return var_declarations
@@ -196,7 +170,6 @@ class Parser:
         self.check_token(ID)
         op = self.current_token
         self.check_token(ASSIGN)
-        print(self.lexer.current_char)
         if self.current_token.token_type == ID and self.lexer.current_char == "(":
             right = self.call_statement()
         else:
@@ -235,14 +208,11 @@ class Parser:
             self.current_token.token_type == SEMI or self.current_token.token_type == ID
         ):
             self.check_token(SEMI)
-            print("JJJJJJJJJJJJJJJJJJJJJJJJJ", self.current_token.token_type)
             results.append(self.statement())
         return results
 
     def statement(self):
         print("statement")
-        print("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
-        print(self.current_token.token_type)
         if self.current_token.token_type == ID and self.lexer.current_char == "(":
             node = self.call_statement()
         elif self.current_token.token_type == ID:
@@ -252,9 +222,7 @@ class Parser:
         elif self.current_token.token_type == FLOAT_TYPE:
             node = self.variable_declaration()
         elif self.current_token.token_type == CALLABLE:
-            print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
             self.check_token(CALLABLE)
-            print(self.current_token)
             call_name = self.current_token.value
             self.check_token(ID)
             self.check_token(LPAREN)
@@ -264,21 +232,10 @@ class Parser:
             block = self.statement_list()
             self.check_token(RBRAKET)
             node = CallableDecl(call_name, params, block)
-            print(
-                "___________________________________________________________________________________________________",
-                node,
-            )
-        # elif self.current_token.token_type == RETURN:
-        #     print('OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO')
-        #     self.check_token(RETURN)
-        #     node = self.expr()
-        #     return node
         elif self.current_token.token_type == RETURN:
             token = self.current_token
-            print(token)
             self.check_token(RETURN)
             expr = self.expr()
-            print(self.current_token)
             self.check_token(SEMI)
             node = Return(token, expr)
         else:

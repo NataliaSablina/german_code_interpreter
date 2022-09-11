@@ -39,7 +39,6 @@ class BuiltInSymbol(Symbol):
 class CallableSymbol(Symbol):
     def __init__(self, name, params=None):
         super().__init__(name)
-        # a list of formal parameters
         self.params = params if params is not None else []
         self.block_ast = None
         self.return_node = Num(Token(INTEGER, 0))
@@ -93,7 +92,6 @@ class ScopedSymbolTable:
 
     def lookup(self, name, only_current_scope=False):
         print(f"LookUp for symbol {name}")
-        print(name)
         symbol = self._symbols.get(name)
         if symbol is not None:
             return symbol
@@ -134,6 +132,7 @@ class SemanticAnalyzer(NodeVisitor):
         print("Leave scope: global")
 
     def visit_CallableDecl(self, node):
+        print("visit_CallableDecl")
         call_name = node.call_name
         call_symbol = CallableSymbol(call_name)
         self.current_scope.insert(call_symbol)
@@ -172,8 +171,6 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope = self.current_scope.enclosing_scope
         print("LEAVE scope: %s" % call_name)
         call_symbol.block_ast = node.block
-        # if not hasattr(call_symbol, 'return_node'):
-        #     call_symbol.return_node.expr = Num(Token(INTEGER, 0))
 
     def visit_Return(self, node):
         pass
@@ -186,7 +183,6 @@ class SemanticAnalyzer(NodeVisitor):
         )
         self.current_scope = main_scope
         for child in node.children:
-            print(child)
             if isinstance(child, list):
                 for decl in child:
                     self.visit(decl)
@@ -256,7 +252,4 @@ class SemanticAnalyzer(NodeVisitor):
         node.call_symbol = call_symbol
 
     def visit_UnaryOp(self, node):
-        self.visit(node.expr)
-
-    # def visit_FunctionDecl(self, node):
-    #     pass
+        self.visit(node.value)

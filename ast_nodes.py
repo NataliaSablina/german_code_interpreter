@@ -53,7 +53,7 @@ class BinOp(AST):
 class UnaryOp(AST):
     def __init__(self, op, expr):
         self.token = self.op = op
-        self.expr = expr
+        self.value = expr
 
 
 class Type(AST):
@@ -66,13 +66,6 @@ class VarAssignDecl(VarDecl):
     def __init__(self, var_name, type_name, right_var):
         super().__init__(var_name, type_name)
         self.value = right_var
-
-
-# class ProcDecl(AST):
-#     def __init__(self, proc_name, params, block):
-#         self.proc_name = proc_name
-#         self.params = params
-#         self.block = block
 
 
 class CallableDecl(AST):
@@ -94,10 +87,3 @@ class CallableCall(AST):
         self.actual_params = actual_params
         self.token = token
         self.call_symbol = None
-
-
-# class FunctionDecl(AST):
-#     def __init__(self, func_name, params, block):
-#         self.func_name = func_name
-#         self.params = params
-#         self.block = block

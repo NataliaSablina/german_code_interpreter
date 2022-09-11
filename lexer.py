@@ -4,6 +4,7 @@ from tokens import *
 
 class Lexer:
     def __init__(self, text):
+        print("lexer")
         self.text = text
         self.pos = 0
         self.current_char = self.text[self.pos]
@@ -35,6 +36,7 @@ class Lexer:
             self.advance()
 
     def number(self):
+        print("number")
         result = ""
         while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
@@ -51,6 +53,7 @@ class Lexer:
             return Token(INTEGER, int(result), self.line, self.column)
 
     def _id(self):
+        print("_id")
         result = ""
         while self.current_char is not None and (
             self.current_char.isalnum() or self.current_char == "_"
@@ -61,10 +64,10 @@ class Lexer:
         token = RESERVED_KEYWORDS.get(
             result.upper(), Token(ID, result, self.line, self.column)
         )
-        print(token)
         return token
 
     def get_next_token(self):
+        print("get_next_token")
         while self.current_char is not None:
             if self.current_char.isspace():
                 self.skip_whitespace()

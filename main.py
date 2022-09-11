@@ -17,5 +17,5 @@ if __name__ == "__main__":
     semantic_analyzer.visit(tree)
     interpreter = Interpreter(tree)
     interpreter.interpret()
-    # print(interpreter.MEMORY)
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
