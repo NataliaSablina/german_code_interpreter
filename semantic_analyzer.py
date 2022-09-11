@@ -125,7 +125,6 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope = global_scope
         for decl in node.declarations:
             self.visit(decl)
-        # self.visit(node.declarations)
         self.visit(node.compound_statement)
         print(global_scope)
         self.current_scope = global_scope.enclosing_scope
@@ -157,23 +156,25 @@ class SemanticAnalyzer(NodeVisitor):
                 for i in block:
                     if isinstance(i, Return):
                         call_symbol.return_node = i
+                        self.visit(i)
                         block.remove(i)
                         continue
                     self.visit(i)
             else:
                 if isinstance(block, Return):
                     call_symbol.return_node = block
+                    self.visit(block)
                     node.block.remove(block)
                     continue
                 self.visit(block)
         print(procedure_scope)
-
         self.current_scope = self.current_scope.enclosing_scope
         print("LEAVE scope: %s" % call_name)
         call_symbol.block_ast = node.block
 
     def visit_Return(self, node):
-        pass
+        print('visit_Return')
+        self.visit(node.value)
 
     def visit_Compound(self, node):
         print("visit_Compound")
@@ -245,6 +246,7 @@ class SemanticAnalyzer(NodeVisitor):
         self.current_scope.insert(var_symbol)
 
     def visit_CallableCall(self, node):
+        print('visit_CallableCall')
         for param_node in node.actual_params:
             self.visit(param_node)
 

@@ -78,7 +78,7 @@ class CallableDecl(AST):
 class Return(AST):
     def __init__(self, token, expr):
         self.token = token
-        self.expr = expr
+        self.value = expr
 
 
 class CallableCall(AST):

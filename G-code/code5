@@ -1,0 +1,35 @@
+funktion f(int d){
+    float u=1.2;
+    rückkehr d+1;
+};
+
+funktion beispiel(int s, b; float d;){
+    int r, z=1+2;
+    z =  6.1;
+    funktion f(float g){
+        float q;
+        q=g;
+        funktion a(int s){
+            rückkehr s;
+        };
+        q = a(2);
+        rückkehr a(8);
+    };
+    r = f(z);
+    rückkehr f(z);
+};
+
+prozedure s(int t){
+    int k;
+};
+
+ausführung {
+    int a, p, g, y;
+    p = f(9);
+    int t=-1.222;
+    a = beispiel(1, p, 3.2);
+    g = - p;
+    y = f(7)*f(6);
+    int h;
+    h = s(8);
+}.

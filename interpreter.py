@@ -133,7 +133,7 @@ class Interpreter(NodeVisitor):
 
     def visit_Return(self, node):
         print("visit_Return")
-        result = self.visit(node.expr)
+        result = self.visit(node.value)
         return result
 
     def interpret(self):

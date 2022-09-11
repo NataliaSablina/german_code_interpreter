@@ -170,10 +170,7 @@ class Parser:
         self.check_token(ID)
         op = self.current_token
         self.check_token(ASSIGN)
-        if self.current_token.token_type == ID and self.lexer.current_char == "(":
-            right = self.call_statement()
-        else:
-            right = self.expr()
+        right = self.expr()
         node = Assign(left=left, op=op, right=right)
         return node
 
@@ -261,6 +258,9 @@ class Parser:
             self.check_token(LPAREN)
             node = self.expr()
             self.check_token(RPAREN)
+            return node
+        elif self.current_token.token_type == ID and self.lexer.current_char == "(":
+            node = self.call_statement()
             return node
         else:
             node = self.variable()

@@ -9,7 +9,7 @@ from interpreter import *
 
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
-    code = open("G-code/code4", "r+", encoding="utf-8").read()
+    code = open("G-code/code5", "r+", encoding="utf-8").read()
     lexer = Lexer(code)
     parser = Parser(lexer)
     tree = parser.parse()
