@@ -4,7 +4,7 @@ funktion f(int d){
 };
 
 funktion beispiel(int s, b; float d;){
-    int r, z=1+2;
+    int r          , z  = 1 + 2;
     z =  6.1;
     funktion f(float g){
         float q;

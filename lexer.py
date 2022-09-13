@@ -20,6 +20,7 @@ class Lexer:
         raise LexerError(message=s)
 
     def advance(self):
+        print('advance')
         if self.current_char == "\n":
             self.line += 1
             self.column = 0
@@ -32,8 +33,15 @@ class Lexer:
             self.column += 1
 
     def skip_whitespace(self):
+        print('skip_whitespace')
         if self.current_char is not None and self.current_char.isspace():
             self.advance()
+
+    def while_whitespace(self):
+        print('while_whitespace')
+        while self.current_char is not None and self.current_char.isspace():
+            self.skip_whitespace()
+        return self.current_char
 
     def number(self):
         print("number")

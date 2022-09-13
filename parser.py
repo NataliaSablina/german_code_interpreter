@@ -92,47 +92,50 @@ class Parser:
         print("variable_declarations")
         type_current_id = self.type_id()
         var_declarations = []
-        if self.current_token.token_type == ID and self.lexer.current_char == "=":
-            var_declarations.extend(
-                self.variable_assignment_declaration(type_current_id)
-            )
-            while self.current_token.token_type == COMMA:
-                self.check_token(COMMA)
-                var_declarations.extend(
-                    self.variable_assignment_declaration(type_current_id)
-                )
-            return var_declarations
-        else:
-            var_declarations = [VarDecl(self.variable(), type_current_id)]
-            while self.current_token.token_type == COMMA:
-                self.check_token(COMMA)
-                if (
-                    self.current_token.token_type == ID
-                    and self.lexer.current_char == "="
-                ):
-                    var_declarations.extend(
-                        self.variable_assignment_declaration(type_current_id)
-                    )
-                    while self.current_token.token_type == COMMA:
-                        self.check_token(COMMA)
-                        var_declarations.extend(
-                            self.variable_assignment_declaration(type_current_id)
-                        )
-                    return var_declarations
-                else:
-                    var_decl = VarDecl(self.variable(), type_current_id)
-                    var_declarations.append(var_decl)
-            return var_declarations
-
-    def variable_assignment_declaration(self, type_current_id):
-        print("variable_assignment_declaration")
-        var_declarations = []
         token = self.current_token
         self.check_token(ID)
+        self.lexer.while_whitespace()
+        if self.current_token.token_type == ASSIGN:
+            var_declarations.append(self.variable_assignment_declaration(token, type_current_id))
+            while self.current_token.token_type == COMMA:
+                self.check_token(COMMA)
+                token = self.current_token
+                self.check_token(ID)
+                self.lexer.while_whitespace()
+                var_declarations.append(self.variable_assignment_declaration(token, type_current_id))
+        elif self.current_token.token_type == COMMA:
+            var_declarations.append(VarDecl(self.variable(token), type_current_id))
+            while self.current_token.token_type == COMMA:
+                self.check_token(COMMA)
+                token = self.current_token
+                self.check_token(ID)
+                self.lexer.while_whitespace()
+                if self.current_token.token_type == ASSIGN:
+                    var_declarations.append(self.variable_assignment_declaration(token, type_current_id))
+                    while self.current_token.token_type == COMMA:
+                        self.check_token(COMMA)
+                        token = self.current_token
+                        self.check_token(ID)
+                        self.lexer.while_whitespace()
+                        var_declarations.append(self.variable_assignment_declaration(token, type_current_id))
+                else:
+                    var_decl = VarDecl(self.variable(token), type_current_id)
+                    var_declarations.append(var_decl)
+        else:
+            var_decl = VarDecl(self.variable(token), type_current_id)
+            var_declarations.append(var_decl)
+        return var_declarations
+
+    def variable_assignment_declaration(self, token, type_current_id):
+        print("variable_assignment_declaration")
         self.check_token(ASSIGN)
         var_assign_decl = VarAssignDecl(token.value, type_current_id, self.expr())
-        var_declarations.append(var_assign_decl)
-        return var_declarations
+        return var_assign_decl
+
+    def variable(self, token):
+        print("variable")
+        node = Var(token)
+        return node
 
     def call_statement(self):
         token = self.current_token
@@ -157,12 +160,6 @@ class Parser:
         )
         return node
 
-    def variable(self):
-        print("variable")
-        token = self.current_token
-        self.check_token(ID)
-        node = Var(token)
-        return node
 
     def assignment(self):
         print("assignment")
@@ -263,7 +260,8 @@ class Parser:
             node = self.call_statement()
             return node
         else:
-            node = self.variable()
+            self.check_token(ID)
+            node = self.variable(token)
             return node
 
     def term(self):
@@ -304,3 +302,4 @@ class Parser:
                 message="Program must end by EOF",
             )
         return tree
+
